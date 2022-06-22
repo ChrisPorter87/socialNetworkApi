@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ChrisPorter87/socialNetworkApi/issues"
   },
-  "homepage": "https://github.com/ChrisPorter87/socialNetworkApi#readme"
+  "homepage": "https://github.com/ChrisPorter87/socialNetworkApi#readme",
+  "dependencies": {
+    "mongoose": "^6.4.0"
+  }
 }
