@@ -1,4 +1,3 @@
-const { Pizza } = require("../../../pizza-hunt/pizza-hunt/models");
 const { User } = require("../models/");
 const userController = {
   getAllUsers: (req, res) => {
@@ -11,14 +10,19 @@ const userController = {
   },
   //get one user by id
   getUserById({ params }, res) {
-    User.findOne({ _id: params.id }).then((dbUserData) => {
-      // If no user found, send 404
-      if (!dbUserData) {
-        res.status(404).json({ message: "No user found with this id" });
-        return;
-      }
-      res.json(dbUserData);
-    });
+    User.findOne({ _id: params.id })
+      .then((dbUserData) => {
+        // If no user found, send 404
+        if (!dbUserData) {
+          res.status(404).json({ message: "No user found with this id" });
+          return;
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json(err);
+      });
   },
   //create a new user
   createUser({ body }, res) {
@@ -41,6 +45,40 @@ const userController = {
   //delete user
   deleteUser({ params }, res) {
     User.findOneAndDelete({ _id: params.id })
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          res.status(404).json({ message: "No user found with this id!" });
+          return;
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => res.status(400).json(err));
+  },
+
+  //make route to add a friend to a user
+  addFriend({ params, body }, res) {
+    User.findOneAndUpdate(
+      { _id: params.id },
+      { $push: { friends: body } },
+      { new: true }
+    )
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          res.status(404).json({ message: "No user found with this id!" });
+          return;
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => res.status(400).json(err));
+  },
+  //make route to remove a friend from a user
+  removeFriend({ params, body }, res) {
+    User.findOneAndUpdate(
+      { _id: params.id },
+      { $pull: { friends: body } },
+      { new: true }
+    )
+
       .then((dbUserData) => {
         if (!dbUserData) {
           res.status(404).json({ message: "No user found with this id!" });
