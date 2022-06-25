@@ -1,4 +1,5 @@
 const { Thought, User } = require("../models");
+const { getAllUsers } = require("./user-controller");
 const thoughtController = {
   //get all thoughts
   getAllThoughts: (req, res) => {
@@ -24,13 +25,27 @@ const thoughtController = {
         res.status(400).json(err);
       });
   },
-  //create a new thought
+  //create a new thought and add created thoughts _id to user's thoughts array
   createThought({ body }, res) {
     Thought.create(body)
 
-      .then((dbThoughtData) => res.json(dbThoughtData))
-      .catch((err) => res.status(400).json(err));
+      .then((dbThoughtData) => {
+        return User.findOneAndUpdate(
+          { _id: params.userId },
+          { $push: { thoughts: _id } },
+          { new: true }
+        );
+      })
+      .then((dbThoughtData) => {
+        if (!dbThoughtData) {
+          res.status(404).json({ message: "No thought found with this id" });
+          return;
+        }
+        res.json(dbThoughtData);
+      })
+      .catch((err) => res.json(err));
   },
+
   // make a post to a single thought to create a reaction in the thought's array of reactions
   addReactionToThought: (req, res) => {
     Thought.findOneAndUpdate(
