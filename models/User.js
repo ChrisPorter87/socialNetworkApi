@@ -1,13 +1,6 @@
 const { Schema, model } = require("mongoose");
 
 const userSchema = new Schema({
-  thoughtText: {
-    type: String,
-    required: true,
-    //make length between 1 and 280 characters
-    minlength: 1,
-    maxlength: 280,
-  },
   createdAt: {
     type: Date,
     default: Date.now,

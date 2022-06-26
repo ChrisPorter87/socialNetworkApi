@@ -1,6 +1,8 @@
-const { User } = require("../models/");
+const { User } = require("../models");
+
 const userController = {
   getAllUsers: (req, res) => {
+    console.log(User);
     User.find({})
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => {
@@ -56,10 +58,10 @@ const userController = {
   },
 
   //make route to add a friend to a user
-  addFriend({ params, body }, res) {
+  addFriend({ params }, res) {
     User.findOneAndUpdate(
-      { _id: params.id },
-      { $push: { friends: body } },
+      { _id: params.userId },
+      { $push: { friends: params.friendId } },
       { new: true }
     )
       .then((dbUserData) => {
@@ -72,10 +74,10 @@ const userController = {
       .catch((err) => res.status(400).json(err));
   },
   //make route to remove a friend from a user
-  removeFriend({ params, body }, res) {
+  removeFriend({ params }, res) {
     User.findOneAndUpdate(
-      { _id: params.id },
-      { $pull: { friends: body } },
+      { _id: params.userId },
+      { $pull: { friends: params.friendId } },
       { new: true }
     )
 
